@@ -29,8 +29,6 @@ int main()
 
     int gps_start_idx = 49;
     int imu_end_idx = 188531;
-    // int gps_start_idx = 311;
-    // int imu_end_idx = 188531;
 
     vector<vector<double>> vIMUdata;  // time[sec], gyro[rad/s], acc[m/s^2]
     vector<vector<double>> vGPSdata;  // clock[sec], week[sec], pos_ecef[m], vel_ecef[m/s]
@@ -44,22 +42,12 @@ int main()
     Eigen::Matrix<double, 20, 1> x;
 
     nav.SetTimeInit(vIMUdata[0][0]);
-    // nav.SetTimeInit(vIMUdata[6166][0]);
 
     // update GPS data for alignment
     double gps_time = vGPSdata[gps_start_idx-1][0];
     Eigen::Vector3d gps_pos = Eigen::Vector3d(vGPSdata[gps_start_idx-1][2], vGPSdata[gps_start_idx-1][3], vGPSdata[gps_start_idx-1][4]);
     Eigen::Vector3d gps_vel = Eigen::Vector3d(vGPSdata[gps_start_idx-1][5], vGPSdata[gps_start_idx-1][6], vGPSdata[gps_start_idx-1][7]);
     nav.UpdateMeasurementVector(gps_time, gps_pos, gps_vel);
-
-    // cout << gps_time << endl;
-    // cout << gps_pos[0] << ", " << gps_pos[1] << ", " << gps_pos[2] << endl;
-    // cout << gps_vel[0] << ", " << gps_vel[1] << ", " << gps_vel[2] << endl;
-    // cout << endl;
-
-    // cout << vIMUdata[0][0] << endl;
-    // cout << "acc: " << vIMUdata[0][4] << ", " << vIMUdata[0][5] << ", " << vIMUdata[0][6] << endl;
-    // cout << "gyro: " << vIMUdata[0][1] << ", " << vIMUdata[0][2] << ", " << vIMUdata[0][3] << endl;
 
     for (int i = 0; i < imu_end_idx+1; i++)
     // for (int i = 6167; i < imu_end_idx+1; i++)
@@ -81,18 +69,9 @@ int main()
 
             if (nav.is_initialized)
             {
-                // cout << "correction" << endl;
-                // cout << gps_start_idx << ", " << vGPSdata[gps_start_idx][0] << ", " << i << ", " << vIMUdata[i][0] << endl;
-                // cout << "------------" << endl;
-
                 mpSol = nav.Correct();
                 x = mpSol->GetNavRosMsg();
                 saveNavData(output_filename, x);
-
-                // if (gps_start_idx == 50){
-                //     return 0;
-                // }
-
             }
             gps_start_idx += 1;
         }
@@ -100,19 +79,13 @@ int main()
         // PROPAGATION
         if (nav.is_initialized)
         {
-            // cout << "prediction" << endl;
-            // cout << i << ", " << vIMUdata[i][0] << endl;
-            
             mpSol = nav.Predict();
 
             x = mpSol->GetNavRosMsg();
             saveNavData(output_filename, x);
-
-            // return 0;
         }
         else
         {
-            // cout << "alignment" << endl;
             nav.Alignment();
         }
     }

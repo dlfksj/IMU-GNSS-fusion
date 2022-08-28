@@ -26,13 +26,13 @@ Build and Run
     ```
 - Build package:  
     ```
-    $ cd ros2_ws
+    $ cd [ros2_ws]
     $ colcon build --symlink-install  
     ```
 - To run EKF node 
     ```
     $ source /opt/ros/galactic/setup.bash  
-    $ source install/setup.bash
+    $ source [ros2_ws]/install/setup.bash
     $ ros2 run imu_gps_navigation ekf
     ```
     (EKF settings => src/imu_gps_navigation/config.yaml)  
