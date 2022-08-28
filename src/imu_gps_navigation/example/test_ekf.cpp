@@ -50,7 +50,6 @@ int main()
     nav.UpdateMeasurementVector(gps_time, gps_pos, gps_vel);
 
     for (int i = 0; i < imu_end_idx+1; i++)
-    // for (int i = 6167; i < imu_end_idx+1; i++)
     {
         // Get IMU data
         double imu_time = vIMUdata[i][0];
