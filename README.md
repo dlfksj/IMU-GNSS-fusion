@@ -1,4 +1,7 @@
-# IMU-GPS EKF
+# IMU-GNSS Fusion
+IMU/GNSS EKF
+
+<br/>
 
 Prerequisite  
 --------

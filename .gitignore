@@ -5,8 +5,10 @@ log/
 .vscode/
 
 NavTest/
+src/imu_gps_navigation/example/test_ekf
 src/imu_gps_navigation/example/imu.csv
 src/imu_gps_navigation/example/gps.csv
 src/imu_gps_navigation/example/span.csv
 src/imu_gps_navigation/example/output.csv
 src/imu_gps_navigation/example/navtest_output.csv
+src/imu_gps_navigation/example/navtest_output_save.csv

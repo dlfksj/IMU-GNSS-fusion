@@ -168,7 +168,7 @@ void EKF::Alignment()
     std::cout << "----- Alignment Finished-----" << std::endl;
     std::cout << "Initial position NED (m): " << pos_ned[0] << ", " << pos_ned[1] << ", " << pos_ned[2] << std::endl;
     std::cout << "Initial velocity NED (m/s): " << vel_ned[0] << ", " << vel_ned[1] << ", " << vel_ned[2] << std::endl; 
-    std::cout << "Initial Atiitude (deg): " << att_eul[0]*180/M_PI << ", " << att_eul[1]*180/M_PI << ", " << att_eul[2]*180/M_PI << std::endl;
+    std::cout << "Initial Attitude (deg): " << att_eul[0]*180/M_PI << ", " << att_eul[1]*180/M_PI << ", " << att_eul[2]*180/M_PI << std::endl;
     std::cout << std::endl;       
 
     // // Set Initial state
@@ -341,7 +341,7 @@ NavSol* EKF::Correct()
     att_quat.x() = att_quat.x() + err_x(7,0);
     att_quat.y() = att_quat.y() + err_x(8,0);
     att_quat.z() = att_quat.z() + err_x(9,0);
-    // att_quat = att_quat.normalized();
+    att_quat = att_quat.normalized();
     bias_acc = bias_acc + err_x.block<3,1>(10,0);
     bias_gyro = bias_gyro + err_x.block<3,1>(13,0);
 
