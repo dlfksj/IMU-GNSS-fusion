@@ -7,10 +7,17 @@ import math
 def quat2eulr(quat):
     quat = quat / np.linalg.norm(quat)
 
-    a = quat[0]
-    b = quat[1]
-    c = quat[2]
-    d = quat[3]
+    # /example/test_ekf 실행시(w,x,y,z 순으로 저장)
+    # a = quat[0]
+    # b = quat[1]
+    # c = quat[2]
+    # d = quat[3]
+
+    # NavTest 데이터 (ROS quaternion x,y,z,w 순으로 저장)
+    a = quat[3]
+    b = quat[0]
+    c = quat[1]
+    d = quat[2]
 
     A = 2*(a*b + c*d)
     B = a*a - b*b - c*c + d*d
