@@ -1,5 +1,5 @@
 # IMU-GNSS Fusion
-IMU/GNSS EKF
+IMU/GNSS EKF (ROS2)
 
 <br/>
 
