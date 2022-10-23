@@ -7,17 +7,11 @@ import math
 def quat2eulr(quat):
     quat = quat / np.linalg.norm(quat)
 
-    # /example/test_ekf 실행시(w,x,y,z 순으로 저장)
-    # a = quat[0]
-    # b = quat[1]
-    # c = quat[2]
-    # d = quat[3]
-
-    # NavTest 데이터 (ROS quaternion x,y,z,w 순으로 저장)
-    a = quat[3]
-    b = quat[0]
-    c = quat[1]
-    d = quat[2]
+    # w,x,y,z 순서
+    a = quat[0]
+    b = quat[1]
+    c = quat[2]
+    d = quat[3]
 
     A = 2*(a*b + c*d)
     B = a*a - b*b - c*c + d*d
@@ -59,10 +53,10 @@ pos_z = csv_data[:,7]
 vel_x = csv_data[:,8]
 vel_y = csv_data[:,9]
 vel_z = csv_data[:,10]
-quat_w = csv_data[:,11]
-quat_x = csv_data[:,12]
-quat_y = csv_data[:,13]
-quat_z = csv_data[:,14]
+quat_w = csv_data[:,14]
+quat_x = csv_data[:,11]
+quat_y = csv_data[:,12]
+quat_z = csv_data[:,13]
 num = len(csv_data[:,0])
 
 plt.plot(pos_y, pos_x)

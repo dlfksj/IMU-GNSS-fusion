@@ -7,6 +7,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
+#include "std_msgs/msg/float32.hpp"
 #include "geometry_msgs/msg/vector3.hpp"
 #include "geometry_msgs/msg/quaternion.hpp"
 #include "sensor_interfaces/msg/imu.hpp"
@@ -23,13 +24,15 @@ class EKFWrapper: public rclcpp::Node
     private:
         rclcpp::Subscription<sensor_interfaces::msg::Imu>::SharedPtr imu_subscriber;
         rclcpp::Subscription<sensor_interfaces::msg::Gnss>::SharedPtr gps_subscriber;
+        rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr yaw_subscriber;
         rclcpp::Publisher<navigation_interfaces::msg::NavState>::SharedPtr state_publisher;
         
         EKF* mpEKF;
         NavSol* mpSol;
-        
+
         void ImuCallback(const sensor_interfaces::msg::Imu & msg);
         void GpsCallback(const sensor_interfaces::msg::Gnss & msg);
+        void InitYawCallback(const std_msgs::msg::Float32 &msg);
         void PublishNavSol();
 };
 

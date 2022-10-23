@@ -36,6 +36,7 @@ class EKF
         bool gps_flag;
 
         void SetTimeInit(const double &time);
+        void SetYawInit(const float &yaw);
 
         void UpdateInputVector(const double &time, const Eigen::Vector3d &acc, const Eigen::Vector3d &gyro);
         void UpdateMeasurementVector(const double &time, const Eigen::Vector3d &pos, const Eigen::Vector3d &vel);
@@ -45,7 +46,9 @@ class EKF
         NavSol* Correct();
         
     private:
-        double time_init; // EKF start time, to check alignment 
+        double time_init;   // EKF start time, to check alignment 
+
+        std::string config; // EKF config file
 
         // initialization variables
         int alignment_cnt;
@@ -88,9 +91,10 @@ class EKF
         Eigen::Matrix<double, 16, 12> B;
         Eigen::Matrix<double, 6, 16> H;
 
-        // set the states and status to their default value
+        // set the variables to their default value
         void Reset();
         void LoadSettings(const std::string &config_file);
+
         void Run();
 
 };

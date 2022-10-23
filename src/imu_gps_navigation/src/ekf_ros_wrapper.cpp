@@ -14,17 +14,18 @@ EKFWrapper::EKFWrapper(EKF* pEKF):Node("ins_gps"), mpEKF(pEKF)
 
     imu_subscriber = this->create_subscription<sensor_interfaces::msg::Imu>("IMU", 10, std::bind(&EKFWrapper::ImuCallback, this, std::placeholders::_1));
     gps_subscriber = this->create_subscription<sensor_interfaces::msg::Gnss>("GNSS", 10, std::bind(&EKFWrapper::GpsCallback, this, std::placeholders::_1));
+    yaw_subscriber = this->create_subscription<std_msgs::msg::Float32>("setyaw_topic", 10, std::bind(&EKFWrapper::InitYawCallback, this, std::placeholders::_1));
     state_publisher = this->create_publisher<navigation_interfaces::msg::NavState>("nav_topic",10);
 }
 
 void EKFWrapper::ImuCallback(const sensor_interfaces::msg::Imu & msg)
 {
-    double imu_time = msg.timestamp.sec + msg.timestamp.nanosec*1e-9;
-    Eigen::Vector3d acc = Eigen::Vector3d(msg.linear_acceleration.x, msg.linear_acceleration.y, msg.linear_acceleration.z);
-    Eigen::Vector3d gyro = Eigen::Vector3d(msg.angular_velocity.x, msg.angular_velocity.y, msg.angular_velocity.z);
     // double imu_time = msg.timestamp.sec + msg.timestamp.nanosec*1e-9;
-    // Eigen::Vector3d acc = Eigen::Vector3d(msg.linear_acceleration.y, msg.linear_acceleration.x, -msg.linear_acceleration.z);
-    // Eigen::Vector3d gyro = Eigen::Vector3d(msg.angular_velocity.y, msg.angular_velocity.x, -msg.angular_velocity.z);
+    // Eigen::Vector3d acc = Eigen::Vector3d(msg.linear_acceleration.x, msg.linear_acceleration.y, msg.linear_acceleration.z);
+    // Eigen::Vector3d gyro = Eigen::Vector3d(msg.angular_velocity.x, msg.angular_velocity.y, msg.angular_velocity.z);
+    double imu_time = msg.timestamp.sec + msg.timestamp.nanosec*1e-9;
+    Eigen::Vector3d acc = Eigen::Vector3d(msg.linear_acceleration.y, msg.linear_acceleration.x, -msg.linear_acceleration.z);
+    Eigen::Vector3d gyro = Eigen::Vector3d(msg.angular_velocity.y*M_PI/180, msg.angular_velocity.x*M_PI/180, -msg.angular_velocity.z*M_PI/180);
 
     // Set EKF start time 
     if (!mpEKF->is_time_set)
@@ -64,6 +65,13 @@ void EKFWrapper::GpsCallback(const sensor_interfaces::msg::Gnss & msg)
         mpSol = mpEKF->Correct();
         PublishNavSol();
     }
+}
+
+void EKFWrapper::InitYawCallback(const std_msgs::msg::Float32 &msg)
+{
+    // Set Initial yaw [deg]
+    // This function resets all variables and restarts the EKF.
+    mpEKF->SetYawInit(msg.data);
 }
 
 void EKFWrapper::PublishNavSol()

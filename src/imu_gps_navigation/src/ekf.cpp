@@ -8,14 +8,16 @@
 #include <yaml-cpp/yaml.h>
 
 
-EKF::EKF(const std::string &config): is_time_set(false), is_initialized(false), imu_flag(false), gps_flag(false), time_init(0)
+// EKF::EKF(const std::string &config): is_time_set(false), is_initialized(false), imu_flag(false), gps_flag(false), time_init(0)
+EKF::EKF(const std::string &config_file): is_time_set(false), is_initialized(false), imu_flag(false), gps_flag(false), time_init(0)
 {
     // Welcome message
     std::cout << "Hello EKF" << std::endl; 
 
-    // Set variables
+    config = config_file;
+
+    // Set variables to their default value & Set user configuration file
     Reset();
-    LoadSettings(config);
 
     // constant
     g << 0, 0, -9.80665;
@@ -24,7 +26,17 @@ EKF::EKF(const std::string &config): is_time_set(false), is_initialized(false), 
 
 void EKF::Reset()
 {
+        std::cout << "Reset" << std::endl;
+
+        // Reset
+        is_initialized = false;
+        is_time_set = false;
+        imu_flag = false;
+        gps_flag = false; 
+
+        time_init = 0;
         alignment_cnt = 0;
+
         g_body.setZero();
         pos_origin.setZero();
         LLH.setZero();
@@ -53,6 +65,9 @@ void EKF::Reset()
         F.setZero();
         B.setZero();
         H.setZero();
+
+        // set user configuration file
+        LoadSettings(config);
 }
 
 void EKF::LoadSettings(const std::string &config)
@@ -87,6 +102,8 @@ void EKF::LoadSettings(const std::string &config)
 
     R.block<3,3>(0,0) << Eigen::Matrix3d::Identity() * cfg["covR.pos"].as<double>();
     R.block<3,3>(3,3) << Eigen::Matrix3d::Identity() * cfg["covR.vel"].as<double>();
+
+    std::cout << "Set config file: " << config << std::endl;
 }
 
 void EKF::SetTimeInit(const double &time)
@@ -96,6 +113,15 @@ void EKF::SetTimeInit(const double &time)
 
     std::cout.precision(15);
     std::cout << "EKF started at: " << time_init << " sec"<< std::endl;
+}
+
+void EKF::SetYawInit(const float &yaw)
+{
+    // Reset all variables to restart the EKF
+    Reset();
+
+    // set yaw [deg]
+    yaw_init = yaw;
 }
 
 void EKF::UpdateInputVector(const double &time, const Eigen::Vector3d &acc, const Eigen::Vector3d &gyro)
