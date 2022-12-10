@@ -38,13 +38,13 @@ void EKFWrapper::ImuCallback(const sensor_interfaces::msg::Imu & msg)
     
     if (mpEKF->is_initialized)
     {
-        RCLCPP_INFO(this->get_logger(), "Prediction");
+        RCLCPP_DEBUG(this->get_logger(), "Prediction");
         mpSol = mpEKF->Predict();
         PublishNavSol();
     }
     else
     {
-        RCLCPP_INFO(this->get_logger(), "Alignment");
+        RCLCPP_DEBUG(this->get_logger(), "Alignment");
         mpEKF->Alignment();
     }
 }
@@ -60,7 +60,7 @@ void EKFWrapper::GpsCallback(const sensor_interfaces::msg::Gnss & msg)
 
     if (mpEKF->is_initialized)
     {
-        RCLCPP_INFO(this->get_logger(), "Correction");
+        RCLCPP_DEBUG(this->get_logger(), "Correction");
 
         mpSol = mpEKF->Correct();
         PublishNavSol();
